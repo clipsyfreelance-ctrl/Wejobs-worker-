@@ -6,7 +6,7 @@ import { Task, MainCategory, User } from './src/types';
 
 async function startServer() {
   const app = express();
-  const PORT = 3000;
+  const PORT = Number(process.env.PORT) || 3000;
 
   // JSON Body parser with high size limit for uploaded avatars and drafts
   app.use(express.json({ limit: '50mb' }));
