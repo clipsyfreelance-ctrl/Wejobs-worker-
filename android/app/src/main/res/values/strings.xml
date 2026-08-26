@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Wejobs</string>
+    <string name="title_activity_main">Wejobs</string>
+    <string name="package_name">com.wejobs.app</string>
+    <string name="custom_url_scheme">com.wejobs.app</string>
+</resources>
