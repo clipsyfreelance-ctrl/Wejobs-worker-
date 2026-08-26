@@ -97,59 +97,6 @@ export class DatabaseStore {
     this.users.set(superAdminId, superAdminUser);
     this.userPasswords.set(superAdminId, hashPassword('berkah313'));
 
-    // 2. Seed a Verified Freelancer Member User for immediate testing & demo
-    const demoUserId = 'user-freelancer-demo';
-    const demoUser: User = {
-      id: demoUserId,
-      fullName: 'Alex Santoso',
-      email: 'alex.writer@wejobs.com',
-      phone: '+6285712345678',
-      address: 'Bandung, West Java, Indonesia',
-      bio: 'Technical Copywriter & Creative Fiction Enthusiast with 4+ years of professional editorial experience.',
-      role: 'user',
-      avatarType: 'builtin',
-      builtinAvatarId: 'panda',
-      emailVerified: true,
-      recipientStatus: 'verified',
-      recipientDetails: {
-        method: 'paypal',
-        accountName: 'Alex Santoso',
-        accountNumber: 'alex.writer@wejobs.com',
-        bankOrProviderName: 'PayPal USD',
-      },
-      createdAt: new Date(Date.now() - 14 * 86400000).toISOString(),
-      rating: 4.95,
-      reviewCount: 19,
-      completedJobsCount: 19,
-    };
-    this.users.set(demoUserId, demoUser);
-    this.userPasswords.set(demoUserId, hashPassword('wejobs123'));
-
-    // Add initial transactions for demo user ($124.50 earned, $0 withdrawn => balance $124.50, allowing real withdrawal testing >= $100)
-    const initialEarnings = [
-      { amount: 18.5, desc: 'Accepted: Comprehensive Research Paper Summary' },
-      { amount: 24.0, desc: 'Accepted: B2B SaaS Thought Leadership Article' },
-      { amount: 32.0, desc: 'Accepted: Sci-Fi Short Story Narrative' },
-      { amount: 15.0, desc: 'Accepted: Structural Editing on Executive Memoir' },
-      { amount: 35.0, desc: 'Accepted: Academic Literature Review Digest' },
-    ];
-
-    let runningBal = 0;
-    initialEarnings.forEach((item, index) => {
-      runningBal += item.amount;
-      const txId = `tx-demo-${index + 1}`;
-      this.transactions.set(txId, {
-        id: txId,
-        userId: demoUserId,
-        type: 'task_earning',
-        amount: item.amount,
-        description: item.desc,
-        status: 'completed',
-        createdAt: new Date(Date.now() - (10 - index) * 86400000).toISOString(),
-        balanceAfter: runningBal,
-      });
-    });
-
     // 3. Seed the 4,421 Tasks
     const seedTasks = generateSeedTasks();
     seedTasks.forEach((t) => this.tasks.set(t.id, t));
@@ -160,42 +107,7 @@ export class DatabaseStore {
     // 5. Seed Sponsors
     INITIAL_SPONSORS.forEach((s) => this.sponsors.set(s.id, s));
 
-    // 6. Seed sample notifications for demo user
-    const sampleNotifications: NotificationItem[] = [
-      {
-        id: 'notif-1',
-        userId: demoUserId,
-        title: 'Task Accepted & Credited! 💰',
-        message: 'Your submission for "Academic Literature Review Digest" was accepted. $35.00 has been added to your Available Balance.',
-        type: 'payment',
-        read: false,
-        link: '/balance',
-        createdAt: new Date(Date.now() - 3600000 * 4).toISOString(),
-      },
-      {
-        id: 'notif-2',
-        userId: demoUserId,
-        title: 'Payout Recipient Verified ✅',
-        message: 'Your PayPal USD account (alex.writer@wejobs.com) has been verified. You can now request withdrawals starting from $100.00 USD.',
-        type: 'withdrawal',
-        read: true,
-        link: '/balance',
-        createdAt: new Date(Date.now() - 86400000 * 2).toISOString(),
-      },
-      {
-        id: 'notif-3',
-        userId: demoUserId,
-        title: 'New High-Reward Writing Jobs Available',
-        message: '14 new tasks were posted in Creative Writing and Research & Writing today.',
-        type: 'job',
-        read: true,
-        link: '/tasks',
-        createdAt: new Date(Date.now() - 86400000 * 3).toISOString(),
-      },
-    ];
-    sampleNotifications.forEach((n) => this.notifications.set(n.id, n));
-
-    // 7. Seed WEJOBS Monthly Challenges, dynamic participants, and previous champions
+    // 6. Seed WEJOBS Monthly Challenges, dynamic participants, and previous champions
     INITIAL_CHALLENGES.forEach((c) => this.challenges.set(c.id, c));
     INITIAL_CHAMPION_HISTORIES.forEach((h) => this.challengeHistories.set(h.id, h));
 
@@ -203,16 +115,7 @@ export class DatabaseStore {
     const seedParticipants = generateSeedParticipants('chal-2026-09');
     seedParticipants.forEach((p) => this.challengeParticipants.set(p.id, p));
 
-    // Also add challenge registration notification for demo user
-    this.createNotification(
-      demoUserId,
-      `🏆 You're registered for the September 2026 Monthly Challenge!`,
-      `Your Participant ID is WMC-202609-0027. Complete writing tasks to earn challenge points and compete for the $1,000 USD Grand Prize.`,
-      'job',
-      '/challenge/september-2026'
-    );
-
-    // 8. Initial Audit Log
+    // 7. Initial Audit Log
     this.logAudit(
       superAdminId,
       'berkahkita937@gmail.com',
